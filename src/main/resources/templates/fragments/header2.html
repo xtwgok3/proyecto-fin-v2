@@ -1,0 +1,43 @@
+<header class="p-3 text-bg-dark">
+    <div class="container">
+
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary ">INICIO</a></li>
+                <li><a href="/servicios" class="nav-link px-2 text-secondary text-white ">SERVICIOS</a></li>
+            </ul>
+
+
+            <form th:if="${session.usuariosession == null}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" >
+                <a th:href="@{/login}" type="button"  class="btn btn-outline-success btn-success-bg-subtle me-2">Iniciar Sesión</a> 
+            </form>
+
+
+            <form th:if="${session.usuariosession == null}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" >
+                <a th:href="@{/registrar-usuario}" type="button"  class="btn btn-outline-success btn-success-bg-subtle me-2">Registrarme</a>
+            </form>
+
+
+            <h4 style="margin-left: auto; margin-top:20px;"  th:if="${session.usuariosession != null}">
+                Hola »<span class="username-color" th:text=" ${session.usuariosession.nombre}"></span>« 
+            </h4>
+            
+            <div th:if="${session.usuariosession != null}" class="dropdown text-end">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle imagen-header" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img  th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" alt="Img logo" class=" rounded-circle  " >
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item"  href="/perfil" >Editar Perfil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</header>
