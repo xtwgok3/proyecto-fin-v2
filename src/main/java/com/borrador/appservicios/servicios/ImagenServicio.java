@@ -77,6 +77,10 @@ public class ImagenServicio {
         return null;
     }
     
-    
+    /*public Imagen monito(){
+        return (Imagen) imagenRepositorio.findByNombre("monito.png");
+    }
+    */
+ 
     
 }

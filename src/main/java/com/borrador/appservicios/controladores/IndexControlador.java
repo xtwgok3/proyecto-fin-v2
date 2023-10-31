@@ -6,6 +6,7 @@ import com.borrador.appservicios.excepciones.Excepciones;
 import com.borrador.appservicios.servicios.UsuarioServicio;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -40,8 +42,7 @@ public class IndexControlador {
 
     @PostMapping("/registro")
     public String registrarUsuario(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String email,
-            @RequestParam String password, @RequestParam String password2, ModelMap modelo,
-            @RequestParam MultipartFile archivo) {
+            @RequestParam String password, @RequestParam String password2, ModelMap modelo, @RequestParam(required = false) MultipartFile archivo) {
 
         try {
             usuarioServicio.persistirUsuario(nombre, apellido, email, password, password2, archivo);

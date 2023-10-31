@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UsuarioServicio implements UserDetailsService {
 
+    Usuario usuario;
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 
@@ -43,27 +44,39 @@ public class UsuarioServicio implements UserDetailsService {
 
         validar(nombre, apellido, email, password, password2);
 
-        Usuario usuario = new Usuario();
+        usuario = new Usuario();
 
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setEmail(email);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
         usuario.setFechaDeAlta(new Date());
-        Imagen imagen = imagenServicio.guardar(archivo);
-        usuario.setImagen(imagen);
+        
+        cargarImagen(archivo);
+
         usuario.setRol(Rol.USER);
         usuario.setActivo(true);
 
         return usuario;
+    }
+//carga imagen nula si no sube un archivo
+    public boolean cargarImagen(MultipartFile archivo) throws Excepciones {
+        if (!archivo.isEmpty()) {
+            Imagen imagen = imagenServicio.guardar(archivo);
+            usuario.setImagen(imagen);
+            return true;
+        }else
+            //usuario.setImagen(null);
+        return false;
     }
 
     @Transactional
     public void persistirUsuario(String nombre, String apellido, String email,
             String password, String password2, MultipartFile archivo) throws Excepciones {
 
-        Usuario usuario = crearUsuario(nombre, apellido, email, password, password2, archivo);
+        usuario = crearUsuario(nombre, apellido, email, password, password2, archivo);
         usuarioRepositorio.save(usuario);
+        System.out.println("Usuario creado"+ usuario.getEmail());
     }
 
     /*public void modificarUsuario(String id, String nombre, String apellido, String email,
@@ -89,7 +102,6 @@ public class UsuarioServicio implements UserDetailsService {
             }
         }
     }*/
-
     public Usuario getOne(String id) {
         return usuarioRepositorio.getOne(id);
     }
@@ -97,7 +109,7 @@ public class UsuarioServicio implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepositorio.buscarPorEmail(email);
+        usuario = usuarioRepositorio.buscarPorEmail(email);
 
         if (usuario != null) {
             List<GrantedAuthority> permisos = new ArrayList();
@@ -134,8 +146,7 @@ public class UsuarioServicio implements UserDetailsService {
         }
 
     }
-    
-    
+
     @Transactional
     public Usuario actualizar(MultipartFile archivo, String id, String nombre, String apellido, String email, String password, String password2) throws Exception {
 
@@ -144,32 +155,25 @@ public class UsuarioServicio implements UserDetailsService {
         Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
 
         if (respuesta.isPresent()) {
-            Usuario usuario = respuesta.get();
+            usuario = respuesta.get();
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
             usuario.setEmail(email);
 
             usuario.setPassword(new BCryptPasswordEncoder().encode(password));
 
-            usuario.setImagen(null);
-            String idImagen = null;
+   
+            cargarImagen(archivo);
 
-            if (usuario.getImagen() != null) {
-                idImagen = usuario.getImagen().getId();
-            }
-
-            Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
-
-            usuario.setImagen(imagen);
+            
             usuarioRepositorio.save(usuario);
+            System.out.println("Perfil Actualizado: " + usuario.getEmail());
             return usuario;
+            
         }
         return null;
-        
 
     }
-
-   
 
     @Transactional(readOnly = true)
     public List<Usuario> listarUsuarios() {
@@ -180,7 +184,5 @@ public class UsuarioServicio implements UserDetailsService {
 
         return usuarios;
     }
-    
-    
 
 }

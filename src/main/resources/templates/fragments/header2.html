@@ -28,8 +28,12 @@
             </h4>
             
             <div th:if="${session.usuariosession != null}" class="dropdown text-end">
-                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle imagen-header" data-bs-toggle="dropdown" aria-expanded="false">
+                <a th:if="${session.usuariosession.imagen != null}" href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle imagen-header" data-bs-toggle="dropdown" aria-expanded="false">
                     <img  th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" alt="Img logo" class=" rounded-circle  " >
+                </a>
+                
+                <a th:if="${session.usuariosession.imagen == null}" href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle imagen-header" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img  th:src="@{/images/perfil.png}" alt="Img logo" class=" rounded-circle  " >
                 </a>
                 <ul class="dropdown-menu text-small">
                     <li><a class="dropdown-item"  href="/perfil" >Editar Perfil</a></li>
